@@ -101,7 +101,7 @@ The `basic-syscall/` folder stores the implementation of a simple program in ass
 The program invokes two system calls: `write` and `exit`.
 The program is duplicated in two files using the two x86 assembly language syntaxes: the Intel / NASM syntax (`hello.asm`) and the AT&T / GAS syntax (`hello.s`).
 
-The implementation follows the [x86_64 Linux calling convention](https://blog.rchapman.org/posts/Linux_System_Call_Table_for_x86_64/):
+The implementation follows the [x86_64 Linux calling convention](https://x64.syscall.sh/):
 * system call ID is passed in the `rax` register
 * system call arguments are passed, in order, in the `rdi`, `rsi`, `rdx`, `r10`, `r8`, `r9` registers
 
@@ -151,6 +151,43 @@ Obviously, this is not portable (specific to a given CPU architecture, x86_64 in
 For portability and maintainability, we require a higher level language, such as C.
 In order to use C, we need function wrappers around system calls.
 
+#### Practice
+
+To learn more about system calls, go through the practice items below.
+You needn't go through all of them, though it would be great if you did.
+If you get stuck, take a sneak peak at the solutions in the `sol/basic-syscall/` folder.
+
+For debugging, use `strace` to trace the system calls from your program and make sure the arguments are set right.
+
+1. Update the `hello.asm` and / or `hello.s` files to print both `Hello, world!` and `Bye, world!`.
+
+   This means adding another `write` system call.
+
+1. Update the `hello.asm` and / or `hello.s` files to pause the execution of the program before the `exit` system call.
+
+   You need to make the `sys_pause` system call, with no arguments.
+   Find its ID [here](https://blog.rchapman.org/posts/Linux_System_Call_Table_for_x86_64/).
+
+1. Update the `hello.asm` and / or `hello.s` files to read a message from standard input and print it to standard output.
+
+   You'll need to define a buffer in the `data` or `bss` section.
+   Use the `read` system call to read data in the buffer.
+   The return value of `read` (placed in the `rax` register) is the number of bytes read.
+   Use that value as the 3rd argument or `write`, i.e. the number of bytes printed.
+
+   Find the ID of the `read` system call [here](https://x64.syscall.sh/).
+   To find out more about its arguments, see [its man page](https://man7.org/linux/man-pages/man2/read.2.html).
+   Standard input descriptor is `0`.
+
+1. **Difficult**: Port the initial program to ARM on 64 bits (also called **aarch64**).
+
+   Use the skeleton files in the `arm/` folder.
+   Find information about the aarch64 system calls [here](https://arm64.syscall.sh/).
+
+1. Create your own program, written in assembly, doing some system calls you want to learn more about.
+   Create a Makefile for that program.
+   Run the resulting program with `strace` to see the actual system calls being made (and their arguments).
+
 ### System Call Wrappers
 
 The `syscall-wrapper/` folder stores the implementation of a simple program written in C (`main.c`) that calls the `write()` and `exit()` functions.
@@ -158,7 +195,7 @@ The functions are defined in `syscall.asm` as wrappers around corresponding syst
 Each function invokes the corresponding system call using the specific system call ID and the arguments provided for the function call.
 
 The implementation of the two wrapper functions in `syscall.asm` is very simple, as the function arguments are passed in the same registers required by the system call.
-This is because of the overlap of the first three registers for the [x86_64 Linux function calling convention](https://en.wikipedia.org/wiki/X86_calling_conventions#System_V_AMD64_ABI) and the [x86_64 Linux system call convention](https://blog.rchapman.org/posts/Linux_System_Call_Table_for_x86_64/).
+This is because of the overlap of the first three registers for the [x86_64 Linux function calling convention](https://en.wikipedia.org/wiki/X86_calling_conventions#System_V_AMD64_ABI) and the [x86_64 Linux system call convention](https://x64.syscall.sh/).
 
 `syscall.h` contains the declaration of the two functions and it's included in `main.c`.
 In this way, C programs can be written that make function calls that end up making system calls.
