@@ -1,53 +1,31 @@
-import std.stdio;
-import std.format;
+import std.stdio : writeln;
 
-enum ON_STACK = 1;
-enum N = 10;
-
-class AttackOnTitanCharacter
+int random_func()
 {
-    size_t id;
-    string name;
+    int a = 101, b = 102, c = 103, d = 104;
+    int e = 105, f = 106, g = 107;
+    return 1;
+}
 
-    this(size_t id, string name)
-    {
-        this.id = id;
-        this.name = name;
-    }
-
-    override string toString()
-    {
-        return format("id = %s, name = %s", id, name);
-    }
-
-    // destructor - called when object is destroyed
-    ~this()
-    {
-        printf("destroying %s\n", name.ptr);
-    }
+int* bad()
+{
+    int p = 10;
+    int *q = &p;
+    return q;
 }
 
 void main()
 {
-    // allocating on stack
-    static if(ON_STACK)
-        AttackOnTitanCharacter[N] list;
-    // allocating on the heap using dynamic arrays
-    else
-        AttackOnTitanCharacter[] list = new AttackOnTitanCharacter[N];
+    // 1st example
+    int *q = bad();
+    writeln(*q);
+    random_func();
+    writeln(*q);
 
-    list[0] = new AttackOnTitanCharacter(1, "Eren");
-    list[1] = new AttackOnTitanCharacter(2, "Zeke");
-    list[2] = new AttackOnTitanCharacter(3, "Kenny");
-    list[3] = new AttackOnTitanCharacter(4, "Reiner");
-    list[4] = new AttackOnTitanCharacter(5, "Armin");
-    list[5] = new AttackOnTitanCharacter(6, "Hange");
-    list[6] = new AttackOnTitanCharacter(7, "Levi");
-    list[7] = new AttackOnTitanCharacter(8, "Mikasa");
-    list[8] = new AttackOnTitanCharacter(9, "Sasha");
-    list[9] = new AttackOnTitanCharacter(10, "Erwin");
+    // 2nd example
+    int[10] a;
+    //a[20] = 5;
 
-    writeln(list);
-
-    // no need to free, the garbage collector takes care of everything
+    // 3rd example
+    //a[14] = 0;
 }
