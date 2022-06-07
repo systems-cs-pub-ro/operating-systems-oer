@@ -95,7 +95,7 @@ In the rest of this chapter, we will analyze the software stack for different ap
 To get a better grasp on how the software stack works, let's do a bottom-up approach:
 we build and run different programs, that start of by using the system call API (the lowest layer in the software stack) and progressively use higher layers.
 
-### Basic System Call
+### Basic System Calls
 
 The `basic-syscall/` folder stores the implementation of a simple program in assembly language for the x86_64 (64 bit) architecture.
 The program invokes two system calls: `write` and `exit`.
@@ -153,40 +153,8 @@ In order to use C, we need function wrappers around system calls.
 
 #### Practice
 
-To learn more about system calls, go through the practice items below.
-You needn't go through all of them, though it would be great if you did.
-If you get stuck, take a sneak peak at the solutions in the `sol/basic-syscall/` folder.
-
-For debugging, use `strace` to trace the system calls from your program and make sure the arguments are set right.
-
-1. Update the `hello.asm` and / or `hello.s` files to print both `Hello, world!` and `Bye, world!`.
-
-   This means adding another `write` system call.
-
-1. Update the `hello.asm` and / or `hello.s` files to pause the execution of the program before the `exit` system call.
-
-   You need to make the `sys_pause` system call, with no arguments.
-   Find its ID [here](https://blog.rchapman.org/posts/Linux_System_Call_Table_for_x86_64/).
-
-1. Update the `hello.asm` and / or `hello.s` files to read a message from standard input and print it to standard output.
-
-   You'll need to define a buffer in the `data` or `bss` section.
-   Use the `read` system call to read data in the buffer.
-   The return value of `read` (placed in the `rax` register) is the number of bytes read.
-   Use that value as the 3rd argument or `write`, i.e. the number of bytes printed.
-
-   Find the ID of the `read` system call [here](https://x64.syscall.sh/).
-   To find out more about its arguments, see [its man page](https://man7.org/linux/man-pages/man2/read.2.html).
-   Standard input descriptor is `0`.
-
-1. **Difficult**: Port the initial program to ARM on 64 bits (also called **aarch64**).
-
-   Use the skeleton files in the `arm/` folder.
-   Find information about the aarch64 system calls [here](https://arm64.syscall.sh/).
-
-1. Create your own program, written in assembly, doing some system calls you want to learn more about.
-   Create a Makefile for that program.
-   Run the resulting program with `strace` to see the actual system calls being made (and their arguments).
+Update the `hello.asm` and / or `hello.s` files to print both `Hello, world!` and `Bye, world!`.
+This means adding another `write` system call.
 
 ### System Call Wrappers
 
@@ -230,3 +198,55 @@ The trace is similar to the previous example, showing the `write` and `exit` sys
 By creating system call wrappers as C functions, we are now relieved of the burden of writing assembly language code.
 Of course, there has to be an initial implementation of wrapper functions written in assembly language;
 but, after that, we can use C only.
+
+#### Practice
+
+Update the files in the `syscall-wrapper/` folder to make available the `read` system call as a wrapper.
+Make a call to the `read` system call to read data from standard input in a buffer.
+The call `write` to print data from that buffer.
+
+We can see that it's easier to have wrapper calls and write most of the code in C than in assembly language.
+
+## Arena
+
+Go through the practice items below to hone your skills in working with layers of the software stack.
+
+### System Calls
+
+Enter the `basic-syscall/` folder and go through the practice items below.
+If you get stuck, take a sneak peak at the solutions in the `solution/basic-syscall/` folder.
+
+For debugging, use `strace` to trace the system calls from your program and make sure the arguments are set right.
+
+1. Update the `hello.asm` and / or `hello.s` files to pause the execution of the program before the `exit` system call.
+
+   You need to make the `sys_pause` system call, with no arguments.
+   Find its ID [here](https://blog.rchapman.org/posts/Linux_System_Call_Table_for_x86_64/).
+
+1. Update the `hello.asm` and / or `hello.s` files to read a message from standard input and print it to standard output.
+
+   You'll need to define a buffer in the `data` or `bss` section.
+   Use the `read` system call to read data in the buffer.
+   The return value of `read` (placed in the `rax` register) is the number of bytes read.
+   Use that value as the 3rd argument or `write`, i.e. the number of bytes printed.
+
+   Find the ID of the `read` system call [here](https://x64.syscall.sh/).
+   To find out more about its arguments, see [its man page](https://man7.org/linux/man-pages/man2/read.2.html).
+   Standard input descriptor is `0`.
+
+1. **Difficult**: Port the initial program to ARM on 64 bits (also called **aarch64**).
+
+   Use the skeleton files in the `arm/` folder.
+   Find information about the aarch64 system calls [here](https://arm64.syscall.sh/).
+
+1. Create your own program, written in assembly, doing some system calls you want to learn more about.
+   Create a Makefile for that program.
+   Run the resulting program with `strace` to see the actual system calls being made (and their arguments).
+
+### System Call Wrappers
+
+Enter the `syscall-wrapper/` folder and go through the practice items below.
+
+1. Update the files in the `syscall-wrapper/` folder to make available the `getpid` system call as a wrapper.
+   Create a function with the signature `void itoa(int n, char *a)` that converts an integer to a string.
+   For example the `1234` turn to the `"1234"` string (NUL-terminated, 5 bytes length).
