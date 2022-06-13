@@ -51,6 +51,8 @@ The last two characteristics rely on two items:
 
 TODO: Diagram of generic software stack
 
+TODO: Quiz
+
 ## Modern Software Stacks
 
 Most modern computing systems use a software stack such as the one in the figure below:
@@ -156,6 +158,8 @@ In order to use C, we need function wrappers around system calls.
 Update the `hello.asm` and / or `hello.s` files to print both `Hello, world!` and `Bye, world!`.
 This means adding another `write` system call.
 
+TODO: Quiz
+
 ### System Call Wrappers
 
 The `syscall-wrapper/` folder stores the implementation of a simple program written in C (`main.c`) that calls the `write()` and `exit()` functions.
@@ -206,6 +210,8 @@ Make a call to the `read` system call to read data from standard input in a buff
 The call `write` to print data from that buffer.
 
 We can see that it's easier to have wrapper calls and write most of the code in C than in assembly language.
+
+TODO: Quiz
 
 ## Arena
 
