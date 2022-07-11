@@ -1,0 +1,14 @@
+---
+specification: '0.5'
+name: app-schedule-threads
+unikraft:
+  version: 6a1e028
+  kconfig:
+    - CONFIG_LIBUKSCHEDCOOP=y
+    - CONFIG_LIBUKSIGNAL=y
+targets:
+  - architecture: x86_64
+    platform: linuxu
+libraries:
+  newlib:
+    version: '6375324'

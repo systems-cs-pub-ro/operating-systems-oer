@@ -1,0 +1,9 @@
+### Invisible option for dependencies
+config APPSCHEDULETHREADS_DEPENDENCIES
+	bool
+	default y
+	select LIBNEWLIBC
+
+config APPSCHEDULETHREADS_COOPERATE
+	bool "Cooperate"
+	default n

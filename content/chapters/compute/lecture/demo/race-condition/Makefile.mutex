@@ -1,0 +1,4 @@
+BINARY = race_condition_mutex
+CFLAGS = -g -Wall -Wextra -Werror -I ../utils -D USE_MUTEX
+LDLIBS = -lpthread
+include ../../../../../common/single.mk

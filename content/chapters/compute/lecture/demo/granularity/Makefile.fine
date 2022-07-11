@@ -1,0 +1,4 @@
+BINARY = fine_granularity
+CFLAGS = -g -Wall -Wextra -Werror -I ../utils -D FINE_GRAINED -D USE_MUTEX
+LDLIBS = -lpthread
+include ../../../../../common/single.mk
