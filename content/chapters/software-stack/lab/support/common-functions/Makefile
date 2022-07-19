@@ -1,6 +1,6 @@
 NASM = nasm
 CC = gcc
-CFLAGS = -fno-stack-protector
+CFLAGS = -fno-PIC -fno-stack-protector
 LDFLAGS = -nostdlib -no-pie -Wl,--entry=main -Wl,--build-id=none
 
 .PHONY: all clean
