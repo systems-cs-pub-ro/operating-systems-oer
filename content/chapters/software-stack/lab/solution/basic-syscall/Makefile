@@ -1,1 +1,1 @@
-../../basic-syscall/Makefile
+../../support/basic-syscall/Makefile
