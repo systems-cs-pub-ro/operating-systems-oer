@@ -207,7 +207,10 @@ but, after that, we can use C only.
 
 Update the files in the `support/syscall-wrapper/` folder to make available the `read` system call as a wrapper.
 Make a call to the `read` system call to read data from standard input in a buffer.
-The call `write` to print data from that buffer.
+Then call `write()` to print data from that buffer.
+
+Note that the `read` system call returns the number of bytes `read`.
+Use that as the argument to the subsequent `write` call that prints read data.
 
 We can see that it's easier to have wrapper calls and write most of the code in C than in assembly language.
 
@@ -353,18 +356,28 @@ For debugging, use `strace` to trace the system calls from your program and make
 ### System Call Wrappers
 
 Enter the `support/syscall-wrapper/` folder and go through the practice items below.
+If you get stuck, take a sneak peak at the solutions in the `solution/syscall-wrapper/` folder.
 
 1. Update the files in the `syscall-wrapper/` folder to make available the `getpid` system call as a wrapper.
-   Create a function with the signature `void itoa(int n, char *a)` that converts an integer to a string.
-   For example the `1234` turn to the `"1234"` string (NUL-terminated, 5 bytes length).
+   Create a function with the signature `unsigned int itoa(int n, char *a)` that converts an integer to a string.
+   It returns the number of digits in the string.
+   For example the `1234` number turns to the `"1234"` string (NUL-terminated, 5 bytes length);
+   the return value is `4` (the number of digits of the `"1234"` string).
+
+   Then make the call to `getpid`;
+   it gets no arguments and returns an integer (the PID - *process ID* of the current process).
 
 ### Common Functions
 
 Enter the `support/common-functions/` folder and go through the practice items below.
+If you get stuck, take a sneak peak at the solutions in the `solution/common-functions/` folder.
 
 1. Update the `putchar()` function in `main_printf.c` to implement a buffered functionality of `printf()`.
    Characters passed via the `putchar()` call will be stored in a predefined static global buffer.
    The `write()` call will be invoked when a newline is encountered or when the buffer is full.
    This results in a reduced number of `write` system calls.
+   Use `strace` to confirm the reduction of the number of `write` system calls.
 
 1. Update the `main_printf.c` file to also feature a `flush()` function that forces the flushing the static global buffer and a `write` system call.
+   Make calls to `printf()` and `flush()` to validate the implementation.
+   Use `strace` to inspect the `write` system calls invoked by `printf()` and `flush()`.
