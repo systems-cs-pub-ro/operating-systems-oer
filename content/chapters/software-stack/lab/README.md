@@ -4,14 +4,16 @@ Software comprises of code and data that is loaded in memory and used by the CPU
 Code means instructions that are to be fetched by the CPU, decoded and executed.
 This is called **machine code**, i.e. binary instructions that are understood by the CPU.
 
+TODO: diagram hardware vs software - the benefit of software
+
 So, when compared to hardware, **software is highly flexible**.
 We can tie together specific instructions to handle a given task and run them on hardware (CPU, memory, I/O).
 Different pieces of these instructions solve different tasks and run on the same hardware.
 Moreover, these pieces of instructions can be duplicated and run on different pieces of hardware, thus providing **software reusability**.
 All we are left with is creating those pieces of instructions, also called programs.
 
-The most direct way is to write programs in machine code.
-We check the CPU understanding of instructions (also called the ISA - *Instruction Set Architecture*) and then we write the binary (machine code) instructions for our program.
+The most direct way to write programs is in machine code.
+First, we browse the CPU's "language" called the ISA - *Instruction Set Architecture* - and then we write the binary (machine code) instructions for our program.
 This is how things happened in the early days of computing, when [punched cards](https://en.wikipedia.org/wiki/Punched_card) were used.
 Obviously, this is cumbersome, error prone and a mess to maintain, update and reuse.
 
@@ -27,25 +29,27 @@ Programs are compiled intro corresponding assembly language code, that is then a
 Maintenance is simplified and other people can contribute to existing programs.
 Another important feature of higher-level programming languages is **portability**: the same program can be compiled and assembled to run on different architectures.
 
+TODO: Diagram with phases of a program
+
 In summary, software has intrinsic characteristics:
-* flexibility: We can (easily) create new pieces of software.
+* **flexibility**: We can (easily) create new pieces of software.
   Little is required, we don't need raw materials as in the case of hardware or housing or transportation.
-* reusability: Software can be easily copied to new systems and provide the same benefits there.
+* **reusability**: Software can be easily copied to new systems and provide the same benefits there.
 
 Other characteristics are important to have, as they make life easier for both users and developers of software:
-* portability: This is the ability to build and run the same program on different computing platforms.
+* **portability**: This is the ability to build and run the same program on different computing platforms.
   This allows a developer to write the application code once and then run it everywhere.
-* fast development: We want developers to be able to write code faster, using higher-level programming languages.
+* **fast development**: We want developers to be able to write code faster, using higher-level programming languages.
 
 The last two characteristics rely on two items:
-* higher-level programming languages: As discussed above, a compiler will take a higher-level program and transform it into binary code for different computing platforms, thus providing portability.
+* **higher-level programming languages**: As discussed above, a compiler will take a higher-level program and transform it into binary code for different computing platforms, thus providing portability.
   Also, it's easier to read (comprehend) and write (develop) source code in a higher-level programming language, thus providing fast development.
-* software stacks: A software stack is the layering of software such that each lower layer provides a set of features that the higher layer can directly use.
+* **software stacks**: A software stack is the layering of software such that each lower layer provides a set of features that the higher layer can directly use.
   This means that there is no need for the higher layer to reimplement those features;
   this provides fast development: focus on only the newer / required parts of software.
 
   Also, each lower layer provides a generic interface to the higher layer.
-  This generic interfaces "hides" possible differences in the even lower layers.
+  These generic interfaces "hides" possible differences in the even lower layers.
   This way, a software stack ensures portability across different other parts of software (and hardware as well).
   For example, the standard C library, that we will present shortly, ensures portability across different operating systems.
 
@@ -70,7 +74,7 @@ The system call API is well defined, stable and complete: it exposes the entire 
 However, it is also minimalistic with respect to features and it provides a low-level (close to hardware) specification, making it cumbersome to use and **not portable**.
 
 Due to the downsides of the system call API, a basic library, the **standard C library** (also called **libc**), is built on top of it.
-The standard C library wraps the system call APIs and provides an easier-to-use and partially portable interface.
+The standard C library wraps each system call into an equivalent function call, following a portable calling convention.
 Because the system call API uses an OS-specific calling convention, the standard C library typically wraps each system call into an equivalent function call, following a portable calling convention.
 More than these wraps, the standard C library provides its own API that is typically portable.
 Part of the API exposed by the standard C library is the **standard C API**, also called **ANSI C** or **ISO C**;
@@ -81,7 +85,7 @@ The existence of the standard C library is reliant on the C programming language
 Because of this, most higher-level and more feature rich programming languages rely on the C library.
 Each programming language typically provides a standard library of its own together with a runtime library, both of which rely on the C library.
 The standard C library is used to develop programs in the respective programming language.
-While the runtime library is transparent to the user and its used during runtime to provide the features required (such as exception handling, bounds checking, garbage collection etc.).
+Conversely, the runtime library is transparent to the user and is used during runtime to provide the features required (such as exception handling, bounds checking, garbage collection etc.).
 
 Other topic-specific libraries (image processing, encryption, compression, regular expression handling etc.) are then built on top of the standard C library and / or specific programming language libraries.
 These contribute to the overall set of APIs made available to the developer.
@@ -109,8 +113,8 @@ The implementation follows the [x86_64 Linux calling convention](https://x64.sys
 
 Let's build and run the two programs:
 
-```Bash
-student@os:~/.../lab/support//basic-syscall$ ls
+```
+student@os:~/.../lab/support/basic-syscall$ ls
 hello.asm  hello.s  Makefile
 
 student@os:~/.../lab/support/basic-syscall$ make
@@ -130,10 +134,12 @@ Hello, world!
 
 The two programs end up printing the `Hello, world!` message at standard output by issuing the `write` system call.
 Then they complete their work by issuing the `exit` system call.
+Use `man 2 write` and `man 3 exit` to get a detailed understanding of the syntax and use of the two system calls.
+You can also check the [online man pages](): [`write`](https://man7.org/linux/man-pages/man2/write.2.html), [`exit`](https://man7.org/linux/man-pages/man3/exit.3.html)
 
 We use `strace` to inspect system calls issued by a program:
 
-```Bash
+```
 student@os:~/.../lab/support/basic-syscall$ strace ./hello-nasm
 execve("./hello-nasm", ["./hello-nasm"], 0x7ffc4e175f00 /* 63 vars */) = 0
 write(1, "Hello, world!\n", 14Hello, world!
@@ -143,7 +149,8 @@ exit(0)                                 = ?
 ```
 
 There are three system calls captured by `strace`:
-* `execve`: this is issues by the shell to create the new process
+* `execve`: this is issued by the shell to create the new process;
+  you'll find out more about `execve` in the "Compute" chapter
 * `write`: called by the program to print `Hello, world!` to standard output
 * `exit`: to exit the program
 
@@ -170,11 +177,11 @@ The implementation of the two wrapper functions in `syscall.asm` is very simple,
 This is because of the overlap of the first three registers for the [x86_64 Linux function calling convention](https://en.wikipedia.org/wiki/X86_calling_conventions#System_V_AMD64_ABI) and the [x86_64 Linux system call convention](https://x64.syscall.sh/).
 
 `syscall.h` contains the declaration of the two functions and it's included in `main.c`.
-In this way, C programs can be written that make function calls that end up making system calls.
+This way, C programs can be written that make function calls that end up making system calls.
 
 Let's build, run and trace system calls for the program:
 
-```Bash
+```
 student@os:~/.../lab/support/syscall-wrapper$ ls
 main.c  Makefile  syscall.h  syscall.s
 
@@ -205,7 +212,7 @@ but, after that, we can use C only.
 
 #### Practice
 
-Update the files in the `support/syscall-wrapper/` folder to make available the `read` system call as a wrapper.
+Update the files in the `support/syscall-wrapper/` folder to make `read` system call available as a wrapper.
 Make a call to the `read` system call to read data from standard input in a buffer.
 Then call `write()` to print data from that buffer.
 
@@ -221,24 +228,21 @@ TODO: Quiz
 By using wrapper calls, we are able to write our programs in C.
 However, we still need to implement common functions for string management, working with I/O, working with memory.
 
-The simple attempt is to implement these functions and then reuse the implementation each time we require them.
-So we would implement `printf()` or `strcpy()` or `malloc()` once in a C source code file, and reuse them.
-This saves us time (we don't have to reimplement) and gives us the opportunity to constantly improve one implementation and then reuse the implementation;
+The simple attempt is to implement these functions (`printf()` or `strcpy()` or `malloc()`) once in a C source code file and then reuse them when needed.
+This saves us time (we don't have to reimplement) and allows us to constantly improve one implementation constantly;
 there will only be one implementation that we update to increase its safety, efficiency or performance.
 
 The `support/common-functions/` folder stores the implementation of string management functions, in `string.c` and `string.h` and of printing functions in `printf.c` and `printf.h`.
 The `printf` implementation is [this one](https://github.com/mpaland/printf).
 
-There are two programs: `main_string.c` showcases string management functions, `main_printf.c` also showcases the `printf()` function.
+There are two programs: `main_string.c` showcases string management functions, `main_printf.c` showcases the `printf()` function.
 
 `main_string.c` depends on the `string.h` and `string.c` files that implement the `strlen()` and `strcpy()` functions.
-In the `main_string.c` file we call `strlen()` and `strcpy()`;
-these functions are implemented in `string.c`.
 We print messages using the `write()` system call wrapper implemented in `syscall.s`
 
 Let's build and run the program:
 
-```Bash
+```
 student@os:~/.../lab/support/common-functions$ make main_string
 gcc -fno-stack-protector   -c -o main_string.o main_string.c
 gcc -fno-stack-protector   -c -o string.o string.c
@@ -268,7 +272,7 @@ The `main()` function `main_printf.c` file contains all the string and printing 
 
 Let's build and run the program:
 
-```Bash
+```
 student@os:~/.../lab/support/common-functions$ make main_printf
 gcc -fno-stack-protector   -c -o printf.o printf.c
 gcc -nostdlib -no-pie -Wl,--entry=main -Wl,--build-id=none  main_printf.o printf.o string.o syscall.o   -o main_printf
@@ -350,6 +354,7 @@ For debugging, use `strace` to trace the system calls from your program and make
    Find information about the aarch64 system calls [here](https://arm64.syscall.sh/).
 
 1. Create your own program, written in assembly, doing some system calls you want to learn more about.
+   Some system calls you could try: `open`, `rename`, `mkdir`.
    Create a Makefile for that program.
    Run the resulting program with `strace` to see the actual system calls being made (and their arguments).
 
@@ -358,10 +363,10 @@ For debugging, use `strace` to trace the system calls from your program and make
 Enter the `support/syscall-wrapper/` folder and go through the practice items below.
 If you get stuck, take a sneak peak at the solutions in the `solution/syscall-wrapper/` folder.
 
-1. Update the files in the `syscall-wrapper/` folder to make available the `getpid` system call as a wrapper.
+1. Update the files in the `syscall-wrapper/` folder to make the `getpid` system call available as a wrapper.
    Create a function with the signature `unsigned int itoa(int n, char *a)` that converts an integer to a string.
    It returns the number of digits in the string.
-   For example the `1234` number turns to the `"1234"` string (NUL-terminated, 5 bytes length);
+   For example, it will convert the number `1234` to the string `"1234"` string (NUL-terminated, 5 bytes long);
    the return value is `4` (the number of digits of the `"1234"` string).
 
    Then make the call to `getpid`;
